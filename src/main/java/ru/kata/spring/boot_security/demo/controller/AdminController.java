@@ -25,37 +25,40 @@ public class AdminController {
     }
 
     @GetMapping
-    public String adminDashboard(@AuthenticationPrincipal User user, Model model) {
+    public String adminDashboard(@AuthenticationPrincipal User user,
+                                 @RequestParam(value = "editUserId", required = false) Long editUserId,
+                                 Model model) {
         model.addAttribute("user", user);
         model.addAttribute("users", userService.findAllUser());
         model.addAttribute("allRoles", roleService.findAll());
+        model.addAttribute("newUser", new User());
+
+        if (editUserId != null) {
+            model.addAttribute("editUser", userService.findById(editUserId));
+        } else {
+            model.addAttribute("editUser", new User());
+        }
+
         return "admin";
     }
 
-    @GetMapping("/users/{id}")
-    @ResponseBody
-    public User getUserById(@PathVariable Long id) {
-        return userService.findById(id);
-    }
-
     @PostMapping("/users")
-    public String createUser(@ModelAttribute("user") User user,
-                             @RequestParam(value = "roles", required = false) Long[] roleIds) {
-        userService.createUser(user, List.of(roleIds));
+    public String createUser(@ModelAttribute("newUser") User user,
+                             @RequestParam(value = "roles", required = false) List<Long> roleIds) {
+        userService.createUser(user, roleIds);
         return "redirect:/admin";
     }
 
     @PostMapping("/users/{id}")
     public String updateUser(@PathVariable("id") Long id,
-                             @ModelAttribute("user") User formUser,
-                             @RequestParam(value = "roles", required = false) Long[] roleIds,
+                             @ModelAttribute("editUser") User formUser,
+                             @RequestParam(value = "roles", required = false) List<Long> roleIds,
                              @RequestParam(value = "password", required = false) String rawPassword) {
         userService.updateUser(id, formUser, roleIds, rawPassword);
         return "redirect:/admin";
     }
 
-
-    @DeleteMapping("/users/{id}")
+    @PostMapping("/users/{id}/delete")
     public String deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";

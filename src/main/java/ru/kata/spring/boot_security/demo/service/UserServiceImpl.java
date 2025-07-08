@@ -66,14 +66,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean updateUser(Long id, User formUser, Long[] roleIds, String rawPassword) {
+    public boolean updateUser(Long id, User formUser, List<Long> roleIds, String rawPassword) {
         User userFromDb = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         userFromDb.setUsername(formUser.getUsername());
 
         if (roleIds != null) {
-            Set<Role> roles = new HashSet<>(roleService.getRolesByIds(List.of(roleIds)));
+            Set<Role> roles = new HashSet<>(roleService.getRolesByIds(roleIds));
             userFromDb.setRoles(roles);
         }
 
