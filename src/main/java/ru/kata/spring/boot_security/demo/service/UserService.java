@@ -10,4 +10,5 @@ public interface UserService {
     void createUser(User user, List<Long> roleIds);
     User findById(Long id);
     boolean updateUser(Long id, User formUser, List<Long> roleIds, String rawPassword);
+    User getUserForEdit(Long editUserId);
 }

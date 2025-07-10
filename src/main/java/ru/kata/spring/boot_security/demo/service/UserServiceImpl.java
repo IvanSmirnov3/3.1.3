@@ -85,4 +85,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return true;
     }
 
+    @Override
+    public User getUserForEdit(Long editUserId) {
+        if (editUserId != null) {
+            return findById(editUserId);
+        }
+        return new User();
+    }
+
 }

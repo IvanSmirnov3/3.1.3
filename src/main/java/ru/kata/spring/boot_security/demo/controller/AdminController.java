@@ -32,13 +32,7 @@ public class AdminController {
         model.addAttribute("users", userService.findAllUser());
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("newUser", new User());
-
-        if (editUserId != null) {
-            model.addAttribute("editUser", userService.findById(editUserId));
-        } else {
-            model.addAttribute("editUser", new User());
-        }
-
+        model.addAttribute("editUser", userService.getUserForEdit(editUserId));
         return "admin";
     }
 
@@ -64,3 +58,4 @@ public class AdminController {
         return "redirect:/admin";
     }
 }
+
